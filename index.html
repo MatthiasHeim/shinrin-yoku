@@ -2,9 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Forest Bathing 360° Experience v1.1.1</title>
+    <title>Forest Bathing 360° Experience v1.2.2</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://unpkg.com/@vapi-ai/web@1.0.0/dist/vapi-client.js"></script>
     <style>
       #info {
         position: absolute;
@@ -62,7 +63,7 @@
   </head>
   <body>
     <div id="info">Viewing direction: <span id="direction"></span></div>
-    <div id="title">Forest Bathing 360° Experience v1.1.1</div>
+    <div id="title">Forest Bathing 360° Experience v1.2.2</div>
     <div id="videoContainer"></div>
     <button id="toggleSound">Mute</button>
     <button id="startGuide">Start Guided Experience</button>
@@ -74,6 +75,7 @@
       let player;
       let camera, directionEl;
       let isSoundOn = true;
+      let vapi;
 
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('videoContainer', {
@@ -95,7 +97,7 @@
       }
 
       function onPlayerReady(event) {
-        event.target.unMute(); // Unmute by default
+        event.target.unMute();
         event.target.playVideo();
       }
 
@@ -139,12 +141,38 @@
         });
 
         document.getElementById('startGuide').addEventListener('click', startGuidedExperience);
+
+        // Initialize VAPI with the provided public key
+        vapi = new Vapi("b1bdc903-982d-4845-b770-4e5334614c88");
+        setupVapiEventListeners();
+      }
+
+      function setupVapiEventListeners() {
+        vapi.on("call-start", () => {
+          console.log("Guided experience has started.");
+        });
+
+        vapi.on("call-end", () => {
+          console.log("Guided experience has ended.");
+        });
+
+        vapi.on("speech-start", () => {
+          console.log("Guide is speaking.");
+          player.setVolume(30);  // Lower video volume when guide is speaking
+        });
+
+        vapi.on("speech-end", () => {
+          console.log("Guide has finished speaking.");
+          player.setVolume(100);  // Restore video volume
+        });
+
+        vapi.on("error", (e) => {
+          console.error("VAPI error:", e);
+        });
       }
 
       function startGuidedExperience() {
-        console.log("Starting guided experience...");
-        alert("Welcome to your guided forest bathing experience. (VAPI integration coming soon)");
-        // Placeholder for future VAPI integration
+        vapi.start("17800062-cdea-41c1-a0f9-848e53ac8288");
       }
 
       document.querySelector('a-scene').addEventListener('loaded', initializeViewer);
