@@ -3,8 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Forest Bathing 360° Experience v1.0.2</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-youtube-component@latest/dist/aframe-youtube-component.min.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <style>
       #info {
         position: absolute;
@@ -32,9 +31,13 @@
   </head>
   <body>
     <div id="info">Viewing direction: <span id="direction"></span></div>
-    <div id="title">Forest Bathing 360° Experience v1.0.1</div>
+    <div id="title">Forest Bathing 360° Experience v1.0.2</div>
     <a-scene>
-      <a-entity youtube="src: https://www.youtube.com/watch?v=5VDknsNA-Ss"></a-entity>
+      <a-assets>
+        <video id="video" src="https://www.youtube.com/embed/5VDknsNA-Ss" autoplay loop crossorigin="anonymous"></video>
+      </a-assets>
+      
+      <a-videosphere src="#video" rotation="0 -90 0"></a-videosphere>
       <a-camera id="camera"></a-camera>
     </a-scene>
 
