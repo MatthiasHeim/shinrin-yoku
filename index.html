@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>360 Forest VAPI Experience</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.2.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/@vapi-ai/web@1.0.0/dist/vapi.min.js"></script>
     <style>
         body { margin: 0; }
         #audioControls {
@@ -33,6 +32,9 @@
         <button id="toggleAudio">Mute/Unmute Forest Sounds</button>
     </div>
 
+    <!-- Load VAPI SDK -->
+    <script src="https://unpkg.com/@vapi-ai/web@1.0.0/dist/vapi.min.js"></script>
+    <!-- Load our script after VAPI SDK -->
     <script src="script.js"></script>
 </body>
 </html>
