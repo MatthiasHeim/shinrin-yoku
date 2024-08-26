@@ -1,6 +1,15 @@
 // Initialize VAPI with your public key
 const vapi = new Vapi("b1bdc903-982d-4845-b770-4e5334614c88");
 
+// Get the audio element
+const forestAudio = document.getElementById('forestAudio');
+const toggleAudioButton = document.getElementById('toggleAudio');
+
+// Function to start the call
+function startCall() {
+    vapi.start("17800062-cdea-41c1-a0f9-848e53ac8288");
+}
+
 // Event listeners for VAPI
 vapi.on("call-start", () => {
     console.log("Call has started.");
@@ -12,10 +21,14 @@ vapi.on("call-end", () => {
 
 vapi.on("speech-start", () => {
     console.log("Assistant speech has started.");
+    // Optionally lower the volume of forest sounds when the assistant is speaking
+    forestAudio.volume = 0.3;
 });
 
 vapi.on("speech-end", () => {
     console.log("Assistant speech has ended.");
+    // Restore the volume of forest sounds
+    forestAudio.volume = 1;
 });
 
 vapi.on("volume-level", (volume) => {
@@ -30,24 +43,25 @@ vapi.on("error", (e) => {
     console.error("An error occurred:", e);
 });
 
-// Function to start the call
-function startCall() {
-    vapi.start("17800062-cdea-41c1-a0f9-848e53ac8288");
+// Function to toggle forest audio
+function toggleForestAudio() {
+    if (forestAudio.paused) {
+        forestAudio.play();
+        toggleAudioButton.textContent = "Mute Forest Sounds";
+    } else {
+        forestAudio.pause();
+        toggleAudioButton.textContent = "Unmute Forest Sounds";
+    }
 }
 
-// Function to stop the call
-function stopCall() {
-    vapi.stop();
-}
+// Event listener for the audio toggle button
+toggleAudioButton.addEventListener('click', toggleForestAudio);
 
-// Function to mute/unmute
-function toggleMute() {
-    const currentlyMuted = vapi.isMuted();
-    vapi.setMuted(!currentlyMuted);
-    console.log("Mute toggled. Currently muted:", !currentlyMuted);
-}
-
-// Event listeners for buttons
-document.getElementById('startCall').addEventListener('click', startCall);
-document.getElementById('stopCall').addEventListener('click', stopCall);
-document.getElementById('toggleMute').addEventListener('click', toggleMute);
+// Start everything when the page loads
+window.addEventListener('load', () => {
+    // Start playing forest sounds
+    forestAudio.play();
+    
+    // Start the VAPI call
+    startCall();
+});
