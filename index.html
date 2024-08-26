@@ -4,9 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>360 Forest VAPI Experience</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.2.0/aframe.min.js"></script>
     <style>
-        body { margin: 0; }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        #forestImage {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
         #audioControls {
             position: absolute;
             bottom: 20px;
@@ -16,12 +25,7 @@
     </style>
 </head>
 <body>
-    <a-scene>
-        <a-sky src="forest.jpg" rotation="0 -90 0"></a-sky>
-        <a-camera>
-            <a-cursor></a-cursor>
-        </a-camera>
-    </a-scene>
+    <img id="forestImage" src="forest.jpg" alt="360 Forest View">
     
     <audio id="forestAudio" loop>
         <source src="forest.mp3" type="audio/mpeg">
@@ -32,9 +36,7 @@
         <button id="toggleAudio">Mute/Unmute Forest Sounds</button>
     </div>
 
-    <!-- Load VAPI SDK -->
     <script src="https://unpkg.com/@vapi-ai/web@1.0.0/dist/vapi.min.js"></script>
-    <!-- Load our script after VAPI SDK -->
     <script src="script.js"></script>
 </body>
 </html>
