@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Forest Bathing 360° Experience v1.0.4</title>
+    <title>Forest Bathing 360° Experience v1.1.0</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <style>
@@ -47,13 +47,25 @@
         border: none;
         cursor: pointer;
       }
+      #startGuide {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        z-index: 200;
+        padding: 10px;
+        background-color: rgba(0,0,0,0.5);
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
     <div id="info">Viewing direction: <span id="direction"></span></div>
-    <div id="title">Forest Bathing 360° Experience v1.0.4</div>
+    <div id="title">Forest Bathing 360° Experience v1.1.0</div>
     <div id="videoContainer"></div>
-    <button id="toggleSound">Toggle Sound</button>
+    <button id="toggleSound">Mute</button>
+    <button id="startGuide">Start Guided Experience</button>
     <a-scene embedded vr-mode-ui="enabled: false">
       <a-entity id="camera" camera look-controls="reverseMouseDrag: true"></a-entity>
     </a-scene>
@@ -61,7 +73,7 @@
     <script>
       let player;
       let camera, directionEl;
-      let isSoundOn = false;
+      let isSoundOn = true;
 
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('videoContainer', {
@@ -83,7 +95,7 @@
       }
 
       function onPlayerReady(event) {
-        event.target.mute();
+        event.target.unMute();
         event.target.playVideo();
       }
 
@@ -102,9 +114,6 @@
             const yaw = Math.round(rotation.y);
             const pitch = Math.round(rotation.x);
             directionEl.textContent = `Yaw: ${yaw}°, Pitch: ${pitch}°`;
-            if (player && player.setSphericalProperties) {
-              player.setSphericalProperties({ yaw: yaw, pitch: pitch });
-            }
           } else {
             console.warn('Camera rotation not available');
           }
@@ -128,6 +137,16 @@
           }
           isSoundOn = !isSoundOn;
         });
+
+        document.getElementById('startGuide').addEventListener('click', startGuidedExperience);
+      }
+
+      function startGuidedExperience() {
+        // Placeholder for VAPI integration
+        console.log("Starting guided experience...");
+        // Here you would initiate the call with the VAPI agent
+        // For now, we'll just show an alert
+        alert("Welcome to your guided forest bathing experience. (VAPI integration coming soon)");
       }
 
       document.querySelector('a-scene').addEventListener('loaded', initializeViewer);
