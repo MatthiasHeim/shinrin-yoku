@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>Forest Bathing 360° Experience</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.2.0/aframe.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe-extras/6.1.1/aframe-extras.min.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-youtube-component@0.1.2/dist/aframe-youtube-component.min.js"></script>
     <style>
       #info {
         position: absolute;
@@ -34,26 +34,31 @@
     <div id="info">Viewing direction: <span id="direction"></span></div>
     <div id="title">Forest Bathing 360° Experience</div>
     <a-scene>
-      <a-assets>
-        <iframe id="video" width="560" height="315" src="https://www.youtube.com/embed/5VDknsNA-Ss?rel=0&autoplay=1&loop=1&playlist=5VDknsNA-Ss" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      </a-assets>
-
-      <a-videosphere src="#video" rotation="0 -90 0"></a-videosphere>
+      <a-entity youtube="video: https://www.youtube.com/watch?v=5VDknsNA-Ss" position="0 0 0"></a-entity>
       <a-camera id="camera"></a-camera>
     </a-scene>
 
     <script>
       let camera, directionEl;
 
-      window.addEventListener('load', function() {
+      function initializeViewer() {
         camera = document.getElementById('camera');
         directionEl = document.getElementById('direction');
 
+        if (!camera) {
+          console.error('Camera element not found');
+          return;
+        }
+
         function updateDirection() {
           const rotation = camera.getAttribute('rotation');
-          const yaw = Math.round(rotation.y);
-          const pitch = Math.round(rotation.x);
-          directionEl.textContent = `Yaw: ${yaw}°, Pitch: ${pitch}°`;
+          if (rotation && typeof rotation.y !== 'undefined' && typeof rotation.x !== 'undefined') {
+            const yaw = Math.round(rotation.y);
+            const pitch = Math.round(rotation.x);
+            directionEl.textContent = `Yaw: ${yaw}°, Pitch: ${pitch}°`;
+          } else {
+            console.warn('Camera rotation not available');
+          }
         }
 
         camera.addEventListener('componentchanged', function(evt) {
@@ -62,8 +67,12 @@
           }
         });
 
+        // Initial update
         updateDirection();
-      });
+      }
+
+      // Wait for A-Frame to finish loading before initializing
+      document.querySelector('a-scene').addEventListener('loaded', initializeViewer);
     </script>
   </body>
 </html>
