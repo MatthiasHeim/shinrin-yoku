@@ -2,8 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Forest Bathing 360° Experience v1.0.2</title>
+    <title>Forest Bathing 360° Experience v1.0.3</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
     <style>
       #info {
         position: absolute;
@@ -27,22 +28,51 @@
         font-size: 24px;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
       }
+      #videoContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>
     <div id="info">Viewing direction: <span id="direction"></span></div>
-    <div id="title">Forest Bathing 360° Experience v1.0.2</div>
-    <a-scene>
-      <a-assets>
-        <video id="video" src="https://www.youtube.com/embed/5VDknsNA-Ss" autoplay loop crossorigin="anonymous"></video>
-      </a-assets>
-      
-      <a-videosphere src="#video" rotation="0 -90 0"></a-videosphere>
+    <div id="title">Forest Bathing 360° Experience v1.0.3</div>
+    <div id="videoContainer"></div>
+    <a-scene embedded>
+      <a-sky id="sky" rotation="0 -90 0"></a-sky>
       <a-camera id="camera"></a-camera>
     </a-scene>
 
     <script>
+      let player;
       let camera, directionEl;
+
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('videoContainer', {
+          videoId: '5VDknsNA-Ss',
+          playerVars: {
+            'autoplay': 1,
+            'controls': 0,
+            'rel': 0,
+            'showinfo': 0,
+            'modestbranding': 1,
+            'loop': 1,
+            'playlist': '5VDknsNA-Ss'
+          },
+          events: {
+            'onReady': onPlayerReady
+          }
+        });
+      }
+
+      function onPlayerReady(event) {
+        event.target.mute();
+        event.target.playVideo();
+      }
 
       function initializeViewer() {
         camera = document.getElementById('camera');
@@ -70,11 +100,9 @@
           }
         });
 
-        // Initial update
         updateDirection();
       }
 
-      // Wait for A-Frame to finish loading before initializing
       document.querySelector('a-scene').addEventListener('loaded', initializeViewer);
     </script>
   </body>
