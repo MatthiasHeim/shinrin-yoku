@@ -15,7 +15,11 @@ window.addEventListener('load', () => {
 
     // Function to start the call
     function startCall() {
-        vapi.start("17800062-cdea-41c1-a0f9-848e53ac8288");
+        try {
+            vapi.start("17800062-cdea-41c1-a0f9-848e53ac8288");
+        } catch (error) {
+            console.error('Failed to start Vapi call:', error);
+        }
     }
 
     // Event listeners for VAPI
@@ -29,13 +33,11 @@ window.addEventListener('load', () => {
 
     vapi.on("speech-start", () => {
         console.log("Assistant speech has started.");
-        // Optionally lower the volume of forest sounds when the assistant is speaking
         forestAudio.volume = 0.3;
     });
 
     vapi.on("speech-end", () => {
         console.log("Assistant speech has ended.");
-        // Restore the volume of forest sounds
         forestAudio.volume = 1;
     });
 
@@ -54,7 +56,7 @@ window.addEventListener('load', () => {
     // Function to toggle forest audio
     function toggleForestAudio() {
         if (forestAudio.paused) {
-            forestAudio.play();
+            forestAudio.play().catch(error => console.error('Failed to play audio:', error));
             toggleAudioButton.textContent = "Mute Forest Sounds";
         } else {
             forestAudio.pause();
@@ -66,7 +68,7 @@ window.addEventListener('load', () => {
     toggleAudioButton.addEventListener('click', toggleForestAudio);
 
     // Start playing forest sounds
-    forestAudio.play();
+    forestAudio.play().catch(error => console.error('Failed to play audio:', error));
     
     // Start the VAPI call
     startCall();
