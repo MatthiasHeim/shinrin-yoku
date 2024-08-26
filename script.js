@@ -1,19 +1,26 @@
-// Wait for the page to load
-window.addEventListener('load', () => {
-    // Check if Vapi is defined
-    if (typeof Vapi === 'undefined') {
-        console.error('Vapi SDK not loaded. Please check your internet connection and try again.');
-        return;
-    }
+// Function to load the Vapi SDK
+function loadVapiSDK() {
+    return new Promise((resolve, reject) => {
+        if (typeof Vapi !== 'undefined') {
+            resolve();
+            return;
+        }
 
-    // Initialize VAPI with your public key
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/@vapi-ai/web@1.0.0/dist/vapi.min.js';
+        script.onload = resolve;
+        script.onerror = () => reject(new Error('Failed to load Vapi SDK'));
+        document.body.appendChild(script);
+    });
+}
+
+// Function to initialize Vapi and start the experience
+function initVapi() {
     const vapi = new Vapi("b1bdc903-982d-4845-b770-4e5334614c88");
 
-    // Get the audio element
     const forestAudio = document.getElementById('forestAudio');
     const toggleAudioButton = document.getElementById('toggleAudio');
 
-    // Function to start the call
     function startCall() {
         try {
             vapi.start("17800062-cdea-41c1-a0f9-848e53ac8288");
@@ -22,7 +29,6 @@ window.addEventListener('load', () => {
         }
     }
 
-    // Event listeners for VAPI
     vapi.on("call-start", () => {
         console.log("Call has started.");
     });
@@ -50,10 +56,9 @@ window.addEventListener('load', () => {
     });
 
     vapi.on("error", (e) => {
-        console.error("An error occurred:", e);
+        console.error("Vapi error occurred:", e);
     });
 
-    // Function to toggle forest audio
     function toggleForestAudio() {
         if (forestAudio.paused) {
             forestAudio.play().catch(error => console.error('Failed to play audio:', error));
@@ -64,12 +69,20 @@ window.addEventListener('load', () => {
         }
     }
 
-    // Event listener for the audio toggle button
     toggleAudioButton.addEventListener('click', toggleForestAudio);
 
-    // Start playing forest sounds
     forestAudio.play().catch(error => console.error('Failed to play audio:', error));
-    
-    // Start the VAPI call
     startCall();
+}
+
+// Load Vapi SDK and initialize when the page is loaded
+window.addEventListener('load', () => {
+    loadVapiSDK()
+        .then(() => {
+            console.log('Vapi SDK loaded successfully');
+            initVapi();
+        })
+        .catch((error) => {
+            console.error('Failed to load Vapi SDK:', error);
+        });
 });
